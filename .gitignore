@@ -1,0 +1,13 @@
+node_modules
+dist
+logs/
+*.env
+!example.env
+service-file.*
+google-services.json
+*.graphql
+*.gql
+.DS_Store
+*.log
+
+/generated/prisma
