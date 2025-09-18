@@ -5,6 +5,7 @@ import { DatabaseConfig } from './database';
 import { GoogleConfig } from './google';
 import { ServerConfig } from './server';
 import { TwilioConfig } from './twilio';
+import { NotificationConfig } from './notification';
 
 export const Config = {
   ...AppConfig,
@@ -12,4 +13,5 @@ export const Config = {
   ...DatabaseConfig,
   ...GoogleConfig,
   ...TwilioConfig,
+  ...NotificationConfig
 } as const;

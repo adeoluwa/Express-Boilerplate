@@ -1,13 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "../../../../generated/prisma"
 
-let _client: PrismaClient | null = null;
+// let _client: PrismaClient | null = null;
 
-export default function prisma() {
-  if (!_client) _client = new PrismaClient();
+const prisma = new PrismaClient()
 
-  return _client;
-}
+// export default function prisma() {
+//   if (!_client) _client = new PrismaClient();
 
-process.on("beforeExist", async () => {
-  if (_client) await _client.$disconnect();
+//   return _client;
+// }
+
+process.on("beforeExit", async () => {
+  // if (_client) await _client.$disconnect();
+  await prisma.$disconnect();
 });
+
+export default prisma;

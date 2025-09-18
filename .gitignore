@@ -11,3 +11,4 @@ google-services.json
 *.log
 
 /generated/prisma
+*prisma/dev.db
