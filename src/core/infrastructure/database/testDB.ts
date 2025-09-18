@@ -4,7 +4,6 @@ import { Config } from "@core/config";
 
 export async function testDBConnection(){
   try {
-    // const client = prisma();
     await prisma.$connect()
 
     logger.info("Prisma connected to database");

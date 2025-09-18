@@ -10,11 +10,6 @@ export async function loadControllers(app: express.Application) {
     cwd: path.join(__dirname, ".."),
   });
 
- //  const chalk = await import('chalk');
-  // const { default: chalk } = await import("chalk");
-
-
-
   if (files.length === 0) {
     logger.warn("No controllers found.");
     return;
