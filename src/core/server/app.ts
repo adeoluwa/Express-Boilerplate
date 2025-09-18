@@ -1,7 +1,6 @@
 import express from "express";
-import useragent from 'express-useragent'
+import useragent from "express-useragent";
 import cookieParser from "cookie-parser";
-// import "express-async-errors";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
@@ -10,20 +9,15 @@ import { buildContainer } from "@core/container/container";
 import { attachContainer } from "@core/container/attach";
 import { loadControllers } from "@core/interfaces/rest/loadControllers";
 import { logger } from "@shared/logger";
-import prisma from "@core/infrastructure/database/prisma";
 import { Config } from "@core/config";
+import { testDBConnection } from "@core/infrastructure/database/testDB";
+import HttpStatusCodes from "@core/utils/HttpStatusCode";
+import { setUpGracefulShutdown } from "./server-shutdown";
 
 export async function buildApp() {
   const app = express();
 
-  try {
-    const client = prisma();
-    await client.$disconnect();
-    logger.info("Prisma connected to database");
-  } catch (error) {
-    logger.error({ error }, "Failed to connect to database:");
-    process.exit(1);
-  }
+  await testDBConnection();
 
   app.use(
     cors({
@@ -36,7 +30,7 @@ export async function buildApp() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-  app.use(useragent.express())
+  app.use(useragent.express());
 
   if (process.env.NODE_ENV === "development") {
     app.use(
@@ -74,30 +68,21 @@ export async function buildApp() {
     }
   );
 
+  app.get("/", (_req, res, _next) => {
+    res.status(HttpStatusCodes.OK).json({
+      AppName: `${Config.APP_NAME}`,
+      Env: `${Config.APP_ENV}`,
+      Message: `${Config.APP_NAME} API is running`,
+    });
+  });
+
   const server = app.listen(Config.PORT, () => {
     logger.info(
       `${Config.APP_NAME} server serving on port http://localhost:${Config.PORT}`
     );
   });
 
-  const shutdown = async (signal: string) => {
-    logger.info(`Received ${signal}. shutting down gracefully....`);
-
-    try {
-      await new Promise<void>((resolve, reject) => {
-        server.close((error) => {
-          if (error) reject(error);
-          else resolve();
-        });
-      });
-    } catch (error) {
-      logger.error({ error }, "Error during shutdown:");
-      process.exit(1);
-    }
-  };
-
-  process.on("SIGTERM", () => shutdown("SIGTERM"));
-  process.on("SIGINT", () => shutdown("SIGINT"));
+  setUpGracefulShutdown(app, server);
 
   return app;
 }

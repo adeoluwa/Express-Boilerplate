@@ -15,7 +15,7 @@ export function buildContainer(): AwilixContainer {
 
   // register the prisma singleton instance as "prisma"
   container.register({
-    prisma: asValue(prisma()),
+    prisma: asValue(prisma),
     env: asValue(process.env),
   });
 
