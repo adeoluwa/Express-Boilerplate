@@ -12,7 +12,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:reset": "prisma migrate reset --force && ts-node --transpile-only prisma/seed.ts",
     "prisma:seed": "ts-node --transpile-only prisma/seed.ts",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx prisma generate",
+    "test:repositories": "ts-node --transpile-only src/core/examples/test-repository-pattern.ts"
   },
   "author": "Joseph Adeoluwa O.",
   "license": "MIT",
