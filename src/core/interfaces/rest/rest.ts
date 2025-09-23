@@ -141,7 +141,7 @@ const GLOBAL_PREFIX = "/api/v1";
  * });
  */
 
-export function createRoutingContoller(
+export function createRoutingController(
   basePath: string,
   routes: RouteMap
 ): Router {
